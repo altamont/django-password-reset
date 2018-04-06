@@ -108,9 +108,7 @@ class PasswordResetForm(forms.Form):
         label=_(''),
         widget=forms.PasswordInput,
     )
-    self.fields['password1'].widget = forms.PasswordInput(attrs={'class': "form-control input-lg", 'placeholder': 'New password'})
-    self.fields['password2'].widget = forms.PasswordInput(attrs={'class': "form-control input-lg", 'placeholder': 'New password (confirm)'})
-
+    
 
     error_messages = {
         'password_mismatch': _("The two passwords didn't match."),
@@ -119,6 +117,9 @@ class PasswordResetForm(forms.Form):
     def __init__(self, *args, **kwargs):
         self.user = kwargs.pop('user')
         super(PasswordResetForm, self).__init__(*args, **kwargs)
+        self.fields['password1'].widget = forms.PasswordInput(attrs={'class': "form-control input-lg", 'placeholder': 'New password'})
+        self.fields['password2'].widget = forms.PasswordInput(attrs={'class': "form-control input-lg", 'placeholder': 'New password (confirm)'})
+
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1', '')
