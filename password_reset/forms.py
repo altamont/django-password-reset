@@ -38,7 +38,10 @@ class PasswordRecoveryForm(forms.Form):
             self.label_key = search_fields[0]
         else:
             self.label_key = 'both'
-        self.fields['username_or_email'].label = labels[self.label_key]
+            
+        self.fields['username_or_email'].label = ""
+        self.fields['username_or_email'].widget = forms.TextInput(attrs={'class': "form-control input-lg", 'placeholder': labels[self.label_key]})
+
 
     def clean_username_or_email(self):
         username = self.cleaned_data['username_or_email']
