@@ -101,13 +101,16 @@ class PasswordRecoveryForm(forms.Form):
 
 class PasswordResetForm(forms.Form):
     password1 = forms.CharField(
-        label=_('New password'),
+        label=_(''),
         widget=forms.PasswordInput,
     )
     password2 = forms.CharField(
-        label=_('New password (confirm)'),
+        label=_(''),
         widget=forms.PasswordInput,
     )
+    self.fields['password1'].widget = forms.PasswordInput(attrs={'class': "form-control input-lg", 'placeholder': 'New password'})
+    self.fields['password2'].widget = forms.PasswordInput(attrs={'class': "form-control input-lg", 'placeholder': 'New password (confirm)'})
+
 
     error_messages = {
         'password_mismatch': _("The two passwords didn't match."),
