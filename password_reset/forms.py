@@ -127,10 +127,6 @@ class PasswordResetForm(forms.Form):
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1', '')
         password2 = self.cleaned_data['password2']
-        if not validate_password('password1') == None:
-            raise forms.ValidationError(
-                self.error_messages['invalid_password'],
-                code='invalid_pass')
         if not password1 == password2:
             raise forms.ValidationError(
                 self.error_messages['password_mismatch'],
