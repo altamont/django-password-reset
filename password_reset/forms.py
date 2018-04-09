@@ -4,6 +4,7 @@ from django.core.validators import validate_email
 from django.db.models import Q
 from django.utils.translation import ugettext_lazy as _
 from django.conf import settings
+from django.contrib.auth.password_validation import validate_password
 
 
 class PasswordRecoveryForm(forms.Form):
@@ -38,10 +39,9 @@ class PasswordRecoveryForm(forms.Form):
             self.label_key = search_fields[0]
         else:
             self.label_key = 'both'
-            
+        
         self.fields['username_or_email'].label = ""
         self.fields['username_or_email'].widget = forms.TextInput(attrs={'class': "form-control input-lg", 'placeholder': labels[self.label_key]})
-
 
     def clean_username_or_email(self):
         username = self.cleaned_data['username_or_email']
@@ -112,6 +112,7 @@ class PasswordResetForm(forms.Form):
 
     error_messages = {
         'password_mismatch': _("The two passwords didn't match."),
+
     }
 
     def __init__(self, *args, **kwargs):
@@ -120,15 +121,22 @@ class PasswordResetForm(forms.Form):
         self.fields['password1'].widget = forms.PasswordInput(attrs={'class': "form-control input-lg", 'placeholder': 'New password'})
         self.fields['password2'].widget = forms.PasswordInput(attrs={'class': "form-control input-lg", 'placeholder': 'New password (confirm)'})
 
+    def clean_password1(self):
+        validate_password(self.cleaned_data.get('password1'))
 
     def clean_password2(self):
         password1 = self.cleaned_data.get('password1', '')
         password2 = self.cleaned_data['password2']
+        if not validate_password('password1') == None:
+            raise forms.ValidationError(
+                self.error_messages['invalid_password'],
+                code='invalid_pass')
         if not password1 == password2:
             raise forms.ValidationError(
                 self.error_messages['password_mismatch'],
                 code='password_mismatch')
         return password2
+
 
     def save(self, commit=True):
         self.user.set_password(self.cleaned_data['password1'])
